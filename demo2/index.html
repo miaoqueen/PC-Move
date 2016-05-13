@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>无缝滚动</title>
+		<style>
+		*{margin:0px;padding:0px}
+		#box{width:300px;height:150px;overflow:hidden;border:1px solid #000;margin:300px auto;position:relative;}
+		ul{list-style-type:none;position:absolute;left:0px;top:0px;}
+		ul li{list-style-type:none;width:100px;height:100px;background:red;margin-right:50px;margin-top:25px;float:left;}
+		</style>
+		<script src="js/jquery-1.11.3.js"></script>
+		<script>
+		$(function(){
+			move("#box");
+			function move(id){
+				//判断ul里面的子级是否需要运动
+				if($(id).find("li").width()*$(id).find("li").length<=$(id).width()){
+					clearInterval(timer);
+				}else if($(id).find("li").width()*$(id).find("li").length>=$(id).width()){
+					//复制一份子级
+					var child=$(id).find("ul").html();//子级
+					child+=child;
+					$(id).find("ul").html(child);
+					//设置ul中的宽度
+					var childW=$(id).find("li").outerWidth();//每个子级的宽度
+					var child_len=$(id).find("ul").children().length;//子级的个数
+					$(id).find("ul").css("width",child_len*childW+"px");
+					
+					var speed=1;
+					var timer=null;
+					timer=setInterval(function(){
+						$(id).find("ul").css("left",$(id).find("ul").position().left-speed+"px");
+						var id_left=$(id).find("ul").css("left");
+						if(Math.abs(parseFloat(id_left))>=parseFloat($(id).find("ul").css("width"))/2){
+							$(id).find("ul").css("left",0);
+						}
+					},30);
+					
+					$(id).mouseover(function(){
+						clearInterval(timer);
+					});
+					$(id).mouseout(function(){
+						timer=setInterval(function(){
+							$(id).find("ul").css("left",$(id).find("ul").position().left-speed+"px");
+							var id_left=$(id).find("ul").css("left");
+							if(Math.abs(parseFloat(id_left))>=parseFloat($(id).find("ul").css("width"))/2){
+								$(id).find("ul").css("left",0);
+							}
+						},30);
+					});
+				}	
+			};
+		});
+		</script>
+	</head>
+	<body>
+	<div id="box">
+		<ul>
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+		</ul>
+	</div>
+	</body>
+</html>
